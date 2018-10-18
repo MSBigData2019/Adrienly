@@ -17,7 +17,7 @@ def main(group):
     if res_search.status_code == 200:
         html_doc = res_search.text
         soup_search = BeautifulSoup(html_doc,"html.parser")
- #       print(soup_search.text)
+        #       print(soup_search.text)
     sygle = soup_search.find("table", class_ = "search-table-data").find_next("td").find_next("td").text
 
     print("sygle = " + sygle)
