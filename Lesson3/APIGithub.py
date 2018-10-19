@@ -9,8 +9,8 @@ import requests
 acces_token = ""
 url_page = "https://gist.github.com/paulmillr/2657075"
 head = {'Authorization': 'token {}'.format('')}
-url_get = "https://api.github.com/users/"
-df = pd.DataFrame(columns = ['contributors', 'number_of_repos', 'average_stargazers'])
+url_get = "https://api.github.com/users/{}/repos?access_token={}&page={}"
+df = pd.DataFrame(columns = ['contributors', 'average_stargazers'])
 
 
 def build_soup(url):
@@ -39,7 +39,7 @@ def get_mean_stars_users(listcontrib):
     for i in range(len(listcontrib)):
         sum_stars = 0
         mean_stars = 0
-        get_repo = requests.get("https://api.github.com/users/" + listcontrib[i] + "/repos", headers=head)
+        get_repo = requests.get(url_get.format(listcontrib[i], acces_token, 1))
         if get_repo.status_code == 200:
             get_json = json.loads(get_repo.content)
             for j in range(len(get_json)):
@@ -47,16 +47,16 @@ def get_mean_stars_users(listcontrib):
             mean_stars = sum_stars/len(get_json)
             list_stars_mean.append(mean_stars)
             dico_mean_stars["mean"] = list_stars_mean
-    df_users_stars_mean = pd.DataFrame.from_dict(dico_mean_stars)
+#    df_users_stars_mean = pd.DataFrame.from_dict(dico_mean_stars)
     # print(df_users_stars_mean)
-    return df_users_stars_mean
+    return dico_mean_stars
 
 def main():
     soup = build_soup(url_page)
     df['contributors'] = _get_top_contributors(soup)
-    df['average_stargazers'] = get_mean_stars_users(_get_top_contributors(soup))
-
-
-
+    df['average_stargazers'] = get_mean_stars_users(df['contributors'])
+    print(df.sort_values('average_stargazers', ascending=False).to_string())
+    
+ 
 
 
