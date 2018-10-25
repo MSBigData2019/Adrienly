@@ -20,16 +20,16 @@ def get_json(url):
     return get_jason
 
 json_para = get_json(url_api)
-
 df_para = pd.DataFrame(json_para)
-df_para["denomination"].split()
-df_para
 
 string = "PARACETAMOL ZYDUS 500 mg, gélule"
 
+# definition du regex
 reg = r'([\D]*)(\d+)(.*),(.*)'
 print(re.findall(reg,string))
 serie = df_para["denomination"]
+
+#transformation de la DF en Serie et modification des colonnes 
 ds = serie.str.extract(reg)
 ds["mul"]=1000
 ds["mul"]= ds["mul"].where(ds[2].str.strip()=="g",1)
